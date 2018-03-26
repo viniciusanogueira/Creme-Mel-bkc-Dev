@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html;" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Inclusão - Retirada de Patrimonio">
+<meta name="author" content="Totvs - GO / Creme Mel">
+
+<title>Solicitação de Patrimônio</title>
+
+<link rel="stylesheet" type="text/css"
+	href="/portal/resources/style-guide/css/fluig-style-guide.min.css">
+<link href="/portal/resources/css/jquery-ui/jquery.ui.min.css" type="text/css" rel="stylesheet" />	
+<link type="text/css" rel="stylesheet" href="crememel.css"/>		
+<script
+	src="/portal/resources/js/jquery/jquery.js"></script>
+<script
+	src="/portal/resources/js/jquery/jquery-ui.min.js"></script>
+<script
+	src="/portal/resources/js/mustache/mustache-min.js"></script>
+<script
+	src="/portal/resources/style-guide/js/fluig-style-guide.min.js"></script>
+
+
+<!-- CUSTOM -->
+<link
+	href="/portal/resources/style-guide/css/fluig-style-guide-filter.min.css"
+	rel="stylesheet" type="text/css">
+<link
+	href="/portal/resources/style-guide/css/fluig-style-guide-ratingstars.min.css"
+	rel="stylesheet" type="text/css">
+<script
+	src="/portal/resources/style-guide/js/fluig-style-guide-filter.min.js"></script>
+<script language="javascript" type="text/javascript" src="custom.js"></script>
+<script language="javascript" type="text/javascript" src="zoom.js"></script>
+<script language="javascript" type="text/javascript" src="validacao.js"></script>
+<script language="javascript" type="text/javascript" src="util.js"></script>
+<!-- vcXMLRPC -->
+<script type="text/javascript" src="/webdesk/vcXMLRPC.js"></script>
+<script type="text/javascript" src="../vcXMLRPC-mobile.js"></script>
+</head>
+
+<body class="fluig-style-guide">
+
+	<div class="page-content container-fluid">
+		<div class="row">
+
+			<div class="col-md-12 col-xs-12">
+				<div class="page-header">
+					<div class="row">
+						<div class="col-md-4 col-xs-4">
+							<div class="pull-left">
+								<img src="logo-crememel.jpg" width="150px" height="70px" />
+							</div>
+						</div>
+						<div class="col-md-8 col-xs-8 containerH1">
+							<h1 class="fs-no-margin fs-ellipsis fs-full-width">Solicita&ccedil;&atilde;o de Patrimonio</h1>
+						</div>
+					</div>
+				</div>
+			</div>
+<!--		<div class="alert alert-sucess alert-dismissible" role="alert" id='divAlert'>
+			    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+			    <strong>Atenção!</strong> Solicitação apenas para datas de vencimento a partir de 10 dias corridos.
+			</div>	-->
+
+			<div class="col-md-12 col-xs-12">
+				<form name="form"
+					class="form-horizontal totvs-form grid vertical create-form-components ui-sortable t1"
+					role="form" action="" id="formulario" name="formulario">
+
+					<fieldset id="fsDadosFicha">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Solicitante</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group fs-clearfix">
+									<div class="col-sm-3 col-xs-12" data-type="textbox" data-show-properties="" data-field-name="dataAbertura">
+										<label>Data Abertura</label> <input type="text" class="form-control pesq-pessoa" name="dataAbertura" id="dataAbertura" readonly>
+										<input type="hidden" id='solicitacaoFluig' name='solicitacaoFluig' value='N'>
+										<input type="hidden" id='grupoPatrimonio' name='grupoPatrimonio' value='N'>
+									</div>
+									<div class="col-sm-3 col-xs-12" data-type="textbox" data-show-properties="" data-field-name="nomeSolicitante" >
+										<label>Nome</label> <input type="text" class="form-control pesq-pessoa" name="nomeSolicitante" id="nomeSolicitante" readonly>
+										<input type="hidden" id='idSolicitante' name='idSolicitante'>
+										<input type="hidden" id='idLogin' name='idLogin'>
+										<input type="hidden" id='idSolicCadastro' name='idSolicCadastro'>
+										<input type="hidden" id='tipoSolicCadastro' name='tipoSolicCadastro'>
+										<input type="hidden" id='idManifesto' name='idManifesto' value='X'>
+										<input type="hidden" id='idSolicitacao' name='idSolicitacao'>
+									</div>
+									<div class="col-sm-3 col-xs-12" data-type="textbox" data-show-properties=""
+										data-field-name="matriculaSolicitante">
+										<label>Matrícula</label> <input type="text" class="form-control pesq-pessoa" name="matriculaSolicitante" id="matriculaSolicitante" readonly>
+									</div>
+									<div class="col-sm-3 col-md-3 col-xs-12 pesq-pessoa" data-type="textbox">
+										<label>Grupo de Trabalho</label> 
+										<input type="text" class="form-control pesq-pessoa" name="grupoDescWorkflow" id="grupoDescWorkflow" readonly>
+										<input type="hidden" id='grupoWorkflow' name='grupoWorkflow'>
+									</div>
+								</div>
+								<div class="form-group fs-clearfix" id="divMarca" style="display: none;">
+									<div class="col-sm-3 col-md-3 col-xs-12 pesq-pessoa" data-type="textbox">
+										<label>Marca</label>
+										<select class="form-control pesq-pessoa" name="empresa" id="empresa">
+											<option value="..">Selecione..</option>
+											<option value="Creme Mel">Creme Mel</option>
+											<option value="Zecas">Zecas</option>
+										</select>
+									</div>
+									<div class="col-sm-3 col-md-3 col-xs-12 pesq-pessoa" data-type="textbox">
+										<label for="zoomFilial">Filial</label>
+										<input type="hidden" id="CCODFIL" name="CCODFIL">
+										<input style="width: 250px'" type="zoom" class="form-control pesq-pessoa" name="zoomFilial" id="zoomFilial"
+											data-zoom="{
+										        'displayKey':'CCODIGO',
+										        'datasetId':'ds_filial',
+										        'fields':[
+													{
+										              'field':'CCODIGO',
+										              'label':'Código'
+										            },
+										            {
+										              'field':'CDESCRICAO',
+										              'label':'Descrição',
+										              'standard':'true',
+										              'search': 'true'
+										            }
+										        ]
+										     }" />
+									</div>
+								</div>
+							</div>						
+						</div>
+					</fieldset>
+					<fieldset id="fsDadosPesquisaCliente">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Cliente</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group fs-clearfix">
+									<div class="col-sm-3 col-md-3 col-xs-12" data-type="textbox">
+										<label>Cod. Protheus</label>
+										<input type="text" class="form-control pesq-pessoa" name="codClientePesq" id="codClientePesq" placeholder="Digita Codigo Protheus">
+									</div>
+									<div class="col-sm-3 col-md-3 col-xs-12" data-type="textbox">
+										<label>CPF / CNPJ</label>
+										<input type="hidden" name="A2PESSOAX" id="A2PESSOAX" value="X">	
+										<input type="text" class="form-control pesq-pessoa" name="cpfPessoaFisica" id="cpfPessoaFisica" onkeydown="return MascaraCpfCnpj(this,event)" onkeyup="return MascaraCpfCnpj(this,event)" placeholder="Digite o CPF / CNPJ">
+									</div>
+									<div class="form-group">
+										<button id="btnPesquisar" style="margin-top: 25px;" type="button" class="btn btn-primary btn-pesq">Pesquisar</button>
+									</div>
+								</div>
+							</div>						
+						</div>
+					</fieldset>
+
+					<fieldset id="fsDadosPesquisa" style='display: none;'>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Dados Cliente</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group fs-clearfix">
+									<div class="col-sm-3 col-md-3 col-xs-12" data-type="textbox">
+										<label>CPF / CNPJ</label>
+										<input type="text" class="form-control" name="cpfCliente" id="cpfCliente" onkeydown="return MascaraCpfCnpj(this,event)" onkeyup="return MascaraCpfCnpj(this,event)" readonly>
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>Cod. Protheus</label>
+										<input type="text" class="form-control" name="codCliente" id="codCliente" readonly>
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>Loja</label>
+										<input type="text" class="form-control" name="lojaCliente" id="lojaCliente" readonly>
+									</div>
+									<div class="col-sm-3 col-md-3 col-xs-12" data-type="textbox">
+										<label for="zoomFilialCliente">Filial Cliente</label>
+										<input type="hidden" id="CCCODFIL" name="CCCODFIL">
+										<input style="width: 250px'" type="zoom" class="form-control" name="zoomFilialCliente" id="zoomFilialCliente"
+											data-zoom="{
+										        'displayKey':'CCODIGO',
+										        'datasetId':'ds_filial',
+										        'fields':[
+													{
+										              'field':'CCODIGO',
+										              'label':'Código'
+										            },
+										            {
+										              'field':'CDESCRICAO',
+										              'label':'Descrição',
+										              'standard':'true',
+										              'search': 'true'
+										            }
+										        ]
+										     }" />
+									</div>
+								</div>
+								<div class="form-group fs-clearfix">
+									<div class="col-md-4 col-sm-4 col-xs-12">
+										<label>Raz&atilde;o Social</label>
+										<input type="text" class="form-control" name="A2NOME" id="A2NOME" readonly> 
+									</div>
+									<div class="col-md-4 col-sm-4 col-xs-12" data-type="textbox">
+										<label>Nome Fantasia</label>
+										<input type="text" class="form-control" name="A2NREDUZ" id="A2NREDUZ" readonly>
+									</div>
+								</div>
+								<div class="form-group fs-clearfix">
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>CEP</label>
+										<input type="text" class="form-control" name="A2CEP" value="" id="A2CEP" placeholder="Digite o CEP para busca do Endereço" maxlength='9' mask='#9999-999' readonly>
+									</div>
+									<div class="col-sm-4 col-md-4 col-xs-12" data-type="textbox">
+										<label>Endereço</label>
+										<input type="text" class="form-control" name="A2END" maxlength="40" id="A2END" readonly>
+									</div>
+									<div class="col-sm-1 col-md-1 col-xs-12" data-type="textbox">
+										<label>Nº</label>
+										<input type="text" class="form-control" name="A2NUMERO" maxlength="40" id="A2NUMERO" readonly>
+									</div>
+									<div class="col-sm-4 col-md-4 col-xs-12" data-type="textbox">
+										<label>Complemento</label>
+										<input type="text" class="form-control" name="A2COMPL" maxlength="40" id="A2COMPL" readonly>
+									</div>
+								</div>
+								<div class="form-group fs-clearfix">
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>Bairro</label>
+										<input type="text" class="form-control" name="A2BAIRRO" maxlength="30" id="A2BAIRRO" readonly>
+									</div>
+									<div class="col-sm-2 col-xs-12"> 
+										<label>Estado</label> 
+										<input type="text" class="form-control" name="A2EST" id="A2EST" readonly>
+									</div>
+									<div class="col-sm-3 col-md-3 col-xs-12" data-type="textbox">
+										<label>Municipio</label>
+										<input type="text" class="form-control" name="A2MUN" maxlength="15" id="A2MUN" readonly>
+									</div>
+								</div>
+								<div class="form-group fs-clearfix" id="idContato1">
+									<div class="col-sm-4 col-md-4 col-xs-12" data-type="textbox">
+										<label>Contato 1</label>
+										<input type="text" class="form-control" name="A2CONTATO1" id="A2CONTATO1" readonly>
+									</div>
+									<div class="col-sm-1 col-md-1 col-xs-12" data-type="textbox">
+										<label>DDD</label>
+										<input type="text" class="form-control" maxlength=3 name="A2DDD1" maxlength="3" id="A2DDD1" mask="#999" readonly>
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>Telefone</label>
+										<input type="text" class="form-control" name="A2TELEFONE1" id="A2TELEFONE1" mask="9999-9999" readonly>
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label></label>
+										<label for="whatsapp1" imagemclass="checkbox" class="selecionada">
+											<img src="whatsapp.png" width="60px" height="60px" style="margin-top: 10px;">
+										</label>									
+										<input type="hidden" id='idWhatsapp1' name='idWhatsapp1' value='N'>
+										<input type="checkbox" id="whatsapp1" name="whatsapp1" value="whatsapp1" style='display: none;'>
+									</div>
+								</div>
+								<div class="form-group fs-clearfix" id="idContato2">
+									<div class="col-sm-4 col-md-4 col-xs-12" data-type="textbox">
+										<label>Contato 2</label>
+										<input type="text" class="form-control" name="A2CONTATO2" id="A2CONTATO2" readonly>
+									</div>
+									<div class="col-sm-1 col-md-1 col-xs-12" data-type="textbox">
+										<label>DDD</label>
+										<input type="text" class="form-control" maxlength=3 name="A2DDD2" maxlength="3" id="A2DDD2" mask="#999" readonly> 
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>Telefone</label>
+										<input type="text" class="form-control" name="A2TELEFONE2" id="A2TELEFONE2" mask="9999-9999" readonly>
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label></label>
+										<label for="whatsapp2" imagemclass="checkbox" class="selecionada">
+											<img src="whatsapp.png" width="60px" height="60px" style="margin-top: 10px;">
+										</label>									
+										<input type="hidden" id='idWhatsapp2' name='idWhatsapp2' value='N'>
+										<input type="checkbox" id="whatsapp2" name="whatsapp2" value="whatsapp2" style='display: none;'>
+									</div>
+								</div>
+								<div class="form-group fs-clearfix" id="idContato3">
+									<div class="col-sm-4 col-md-4 col-xs-12" data-type="textbox">
+										<label>Contato 3</label>
+										<input type="text" class="form-control" name="A2CONTATO3" id="A2CONTATO3" readonly>
+									</div>
+									<div class="col-sm-1 col-md-1 col-xs-12" data-type="textbox">
+										<label>DDD</label>
+										<input type="text" class="form-control" maxlength=3 name="A2DDD3" maxlength="3" id="A2DDD3" mask="#999" readonly>
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>Telefone</label>
+										<input type="text" class="form-control" name="A2TELEFONE3" id="A2TELEFONE3" mask="9999-9999" readonly>
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label></label>
+										<label for="whatsapp3" imagemclass="checkbox" class="selecionada">
+											<img src="whatsapp.png" width="60px" height="60px" style="margin-top: 10px;">
+										</label>									
+										<input type="hidden" id='idWhatsapp3' name='idWhatsapp3' value='N'>
+										<input type="checkbox" id="whatsapp3" name="whatsapp3" value="whatsapp1" style='display: none;'>
+									</div>
+								</div>
+								<div class="form-group fs-clearfix" id="idContato4">
+									<div class="col-sm-4 col-md-4 col-xs-12" data-type="textbox">
+										<label>Contato 4</label>
+										<input type="text" class="form-control" name="A2CONTATO4" id="A2CONTATO4" readonly>
+									</div>
+									<div class="col-sm-1 col-md-1 col-xs-12" data-type="textbox">
+										<label>DDD</label>
+										<input type="text" class="form-control" maxlength=3 name="A2DDD4" maxlength="3" id="A2DDD4" mask="#999" readonly>
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>Telefone</label>
+										<input type="text" class="form-control" name="A2TELEFONE4" id="A2TELEFONE4" mask="9999-9999" readonly>
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label></label>
+										<label for="whatsapp4" imagemclass="checkbox" class="selecionada">
+											<img src="whatsapp.png" width="60px" height="60px" style="margin-top: 10px;">
+										</label>									
+										<input type="hidden" id='idWhatsapp4' name='idWhatsapp4' value='N'>
+										<input type="checkbox" id="whatsapp4" name="whatsapp4" value="whatsapp4" style='display: none;'>
+									</div>
+								</div>
+							</div>
+							<div class="panel-heading" id="divDadosPatrimonio">
+								<h3 class="panel-title">Dados Patrimonio</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group fs-clearfix">
+									<div class="col-sm-3 col-md-3 col-xs-12">
+										<label for="tipoSolicitacao" class="control-label">Tipo Solicita&ccedil;&atilde;o</label>
+										<select class="form-control" name="tipoSolicitacao" id="tipoSolicitacao" onchange='alteraDiv(this.value);'>
+											<option value="..">Selecione..</option>
+											<option value="INCLUSAO">Inclusão</option>
+											<option value="INCLUSAOTRANSFERENCIA">Inclusão - Transferência</option>
+											<option value="RETIRADA">Retirada</option>
+											<option value="TROCA">Troca</option>
+										</select>
+									</div>
+									<div class="col-sm-3 col-md-3 col-xs-12" data-type="textbox" id="divModelo" style="display: none;">
+										<label for="zoomModelo">Modelo</label>
+										<input type="hidden" id='codModelo' name='codModelo'>
+										<input style="width: 250px'" type="zoom" class="form-control" name="zoomModelo" id="zoomModelo" 
+											data-zoom="{
+										        'displayKey':'CDESCRICAO',
+										        'datasetId':'dsModeloPatrimonio',
+										        'fields':[
+										            {
+										              'field':'CDESCRICAO',
+										              'label':'Descrição',
+										              'standard':'true',
+										              'search': 'true'
+										            }
+										        ]
+										     }" />
+									</div>
+									<div class="col-sm-3 col-md-3 col-xs-12" data-type="textbox" id='divJustificativa' style="display: none;">
+										<label for="justificativa" class="control-label">Justificativa</label> <br>
+										<textarea class="form-control" name="justificativa" id="justificativa" rows="3"></textarea>
+									</div>
+								</div>
+								<div class="form-group fs-clearfix" id="divPatrCliente" style="display: none;">
+									<div class="col-sm-3 col-md-3 col-xs-12" data-type="textbox">
+										<label for="zoomPatrimonioCliente">Patrimônio Cliente</label>
+										<input type="hidden" id="CPLAQUETACLIENTE" name="CCPLAQUETACLIENTE">
+										<input style="width: 250px'" type="zoom" class="form-control" name="zoomPatrimonioCliente" id="zoomPatrimonioCliente"
+											data-zoom="{
+										        'displayKey':'CPLAQUETA',
+										        'datasetId':'dsConsultaPatrimonioCliente',
+										        'fields':[
+													{
+										              'field':'CPLAQUETA',
+										              'label':'Código'
+										            },
+										            {
+										              'field':'CNOMPTR',
+										              'label':'Descrição',
+										              'standard':'true',
+										              'search': 'true'
+										            }
+										        ]
+										     }" />
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>Contrato Patrimonio</label>
+										<input type="text" class="form-control" name="CCONTRATOPATR" id="CCONTRATOPATR" readonly>
+										<input type="hidden" name="CADITIVOPATR" id="CADITIVOPATR" value=''>
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>Filial Contrato</label>
+										<input type="text" class="form-control" name="CCONTFILPATR" id="CCONTFILPATR" readonly>
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>Pedido Patrimonio</label>
+										<input type="text" class="form-control" name="CPEDIDOPATR" id="CPEDIDOPATR" readonly>
+									</div>
+								</div>
+								<div class="form-group fs-clearfix" id="divPatrNovo" style="display: none;">
+									<div class="col-sm-3 col-md-3 col-xs-12" data-type="textbox">
+										<label for="zoomFilial">Filial Patrimonio</label>
+										<input type="hidden" id="CCODFILPATR" name="CCODFILPATR">
+										<input style="width: 250px'" type="zoom" class="form-control" name="zoomFilialPatrimonio" id="zoomFilialPatrimonio"
+											data-zoom="{
+										        'displayKey':'CCODIGO',
+										        'datasetId':'ds_filial',
+										        'fields':[
+													{
+										              'field':'CCODIGO',
+										              'label':'Código'
+										            },
+										            {
+										              'field':'CDESCRICAO',
+										              'label':'Descrição',
+										              'standard':'true',
+										              'search': 'true'
+										            }
+										        ]
+										     }" />
+									</div>
+									<div class="col-sm-3 col-md-3 col-xs-12" data-type="textbox">
+										<label for="zoomPatrimonio">Patrimônio Galpão</label>
+										<input type="hidden" id="CPLAQUETA" name="CPLAQUETA">
+										<input style="width: 250px'" type="zoom" class="form-control" name="zoomPatrimonio" id="zoomPatrimonio"
+											data-zoom="{
+										        'displayKey':'CPLAQUETA',
+										        'datasetId':'dsConsultaPatrimonioGalpao',
+										        'fields':[
+													{
+										              'field':'CPLAQUETA',
+										              'label':'Código'
+										            },
+										            {
+										              'field':'CNOMPTR',
+										              'label':'Descrição',
+										              'standard':'true',
+										              'search': 'true'
+										            }
+										        ]
+										     }" />
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>Contrato Novo</label>
+										<input type="text" class="form-control" name="CCONTRATO" id="CCONTRATO" readonly>
+										<input type="hidden" name="CADITIVO" id="CADITIVO" value=''>
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>Filial Contrato Novo</label>
+										<input type="text" class="form-control" name="CCONTFIL" id="CCONTFIL" readonly>
+									</div>
+									<div class="col-sm-2 col-md-2 col-xs-12" data-type="textbox">
+										<label>Pedido Novo</label>
+										<input type="text" class="form-control" name="CPEDIDO" id="CPEDIDO" readonly>
+									</div>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+
+					<fieldset id="fsDadosAprovacao" style='display: none;'>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Aprova&ccedil;&atilde;o</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group fs-clearfix">
+									<div class="col-sm-3 col-md-3 col-xs-12">
+										<label for="responsavel" class="control-label">Respons&aacute;vel</label> <br>
+										<input type="text" name="responsavel" id="responsavel" class="form-control" readonly> 
+									</div>
+									<div class="col-sm-3 col-md-3 col-xs-12">
+										<label for="dtAprov" class="control-label">Data da Aprova&ccedil;&atilde;o</label><br>
+										<input type="text" name="dtAprov" id="dtAprov" class="form-control" readonly>
+									</div>
+									<div class="col-sm-3 col-md-3 col-xs-12" id="divAprovado">
+										<label for="aprovado" class="control-label">Aprova&ccedil;&atilde;o</label><br>
+										<select class="form-control" name="aprovado" id="aprovado">
+											<option value="..">Selecione..</option>
+											<option value="Aprovado">Aprovado</option>
+											<option value="Pre-Reprovado">Pré-Reprovado</option>
+											<option value="Reprovado">Reprovado</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group fs-clearfix">
+									<div class="col-sm-12 col-md-12 col-xs-12">
+										<div class="col-sm-2 col-md-2 col-xs-12">
+											<label for="parecer" class="control-label">Parecer</label> <br>
+										</div>
+										<div class="col-sm-10 col-md-10 col-xs-12">
+											<textarea class="form-control" name="parecer" id="parecer" rows="3"></textarea>
+										</div>
+									</div>
+								</div>
+							</div>						
+						</div>
+					</fieldset>
+
+					<fieldset id="fsDadosConfirmacao" style='display: none;'>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Confirma&ccedil;&atilde;o</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group fs-clearfix">
+									<div class="col-sm-3 col-md-3 col-xs-12">
+										<label for="responsavel" class="control-label">Respons&aacute;vel</label> <br>
+										<input type="text" name="responsavelConf" id="responsavelConf" class="form-control" readonly> 
+									</div>
+									<div class="col-sm-3 col-md-3 col-xs-12">
+										<label for="dtAprov" class="control-label">Data da Confirma&ccedil;&atilde;o</label><br>
+										<input type="text" name="dtConf" id="dtConf" class="form-control" readonly>
+									</div>
+									<div class="col-sm-3 col-md-3 col-xs-12" id="divConfirmado">
+										<label for="confirmado" class="control-label">Confirma&ccedil;&atilde;o</label><br>
+										<select class="form-control" name="confirmado" id="confirmado">
+											<option value="..">Selecione..</option>
+											<option value="Sim">Sim</option>
+											<option value="Nao">N&atilde;o</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group fs-clearfix">
+									<div class="col-sm-12 col-md-12 col-xs-12">
+										<div class="col-sm-2 col-md-2 col-xs-12">
+											<label for="parecer" class="control-label">Parecer</label> <br>
+										</div>
+										<div class="col-sm-10 col-md-10 col-xs-12">
+											<textarea class="form-control" name="parecerConf" id="parecerConf" rows="3"></textarea>
+										</div>
+									</div>
+								</div>
+							</div>						
+						</div>
+					</fieldset>
+
+					<fieldset id="fsHistorico" style="display: none;">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Historico da Inclusão - Retirada</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group fs-clearfix">
+									<div class="table-responsive">
+										<table tablename="tableHistorico" id="tableHistorico" class="table" noaddbutton="true" nodeletebutton="true">
+											<thead>
+												<tr class="tableHeadRow">
+													<th class="tableColumn">Usu&aacute;rio</th>
+													<th class="tableColumn">Data</th>
+													<th class="tableColumn">Status</th>
+													<th class="tableColumn">Intera&ccedil;&atilde;o</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr class="tableBodyRow">
+													<td class="col-sm-2 col-xs-12">
+														<div class="form-field" data-type="textbox" data-field-name="histUsuario">
+															<input class="form-control" type="text" name="histUsuario" id="histUsuario" readonly/>
+														</div>
+													</td>
+													<td class="col-sm-2 col-xs-12">
+														<div class="foHrm-field" data-type="textbox" data-field-name="histData">
+															<input class="form-control" type="text" name="histData" id="histData" readonly/>
+														</div>
+													</td>
+													<td class="col-sm-4 col-xs-12">
+														<div class="form-field" data-type="textbox" data-field-name="histStatus">
+															<textarea class="form-control" rows="5" name="histStatus" id="histStatus" readonly></textarea>
+														</div>
+													</td>
+													<td class="col-sm-4 col-xs-12">
+														<div class="form-field" data-type="textbox" data-field-name="histInt">
+															<textarea class="form-control" rows="5" name="histInt" id="histInt" readonly></textarea>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>						
+						</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		//permite digitar somente numeros
+		$('body').on('keypress', '[data-only-numbers]', function(ev) {
+			var k = ev.keyCode || ev.which;
+			//Permite apagar o conteÃºdo do campo usando as teclas 'backspace' ou 'delete' no firefox.
+			//Nos outros navegadores o keypress nÃ£o gera evento.
+			if (k == 8 || k == 46) {
+				return true;
+			}
+			k = String.fromCharCode(k);
+			if (isNaN(k)) {
+				return false;
+			}
+			return true;
+		});
+
+		$('.create-form-components')
+				.on(
+						'keyup',
+						'input[required="required"][type="text"], input[required="required"][type="number"], input[required="required"][type="date"], textarea[required="required"]',
+						function() {
+							validationFieldsForm($(this), $(this).parents(
+									'.form-field').data('type'));
+						});
+
+		$('.create-form-components')
+				.on(
+						'change',
+						'input[required="required"][type="checkbox"], input[required="required"][type="radio"], select[required="required"]',
+						function() {
+							validationFieldsForm($(this), $(this).parents(
+									'.form-field').data('type'));
+						});
+
+		function validationFieldsForm(field, type) {
+			if (type === "checkbox" || type === "radio") {
+				if (!field.is(':checked')) {
+					field.parents('.form-field').addClass('required');
+				} else {
+					field.parents('.form-field').removeClass('required');
+				}
+			} else {
+				if (!field.val().trim()) {
+					field.parents('.form-field').addClass('required');
+				} else {
+					field.parents('.form-field').removeClass('required');
+				}
+			}
+		}
+
+		var $zoomPreview = $(".zoom-preview");
+		if ($zoomPreview.length) {
+			$zoomPreview.parent().removeClass("input-group");
+			$zoomPreview.remove();
+		}
+
+		var ratings = $(".rating");
+		if (ratings.length > 0)
+			ratingStars(ratings);
+		function ratingStars(stars) {
+			$.each(stars, function(i, obj) {
+				var field = $(this).closest(".form-group")
+						.find(".rating-value");
+				var tgt = $(obj);
+				tgt.html("");
+				var rating = FLUIGC.stars(tgt, {
+					value : field.val()
+				});
+				rating.on("click", function(o) {
+					field.val($(this).index() + 1);
+				});
+			});
+		}
+
+		$.each($("[data-date]"), function(i, o) {
+			var id = $(o).parent().attr("id");
+			FLUIGC.calendar("#" + id);
+		});
+	</script>
+
+</body>
+</html>

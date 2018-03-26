@@ -1,0 +1,26 @@
+div.containerH1 {
+    height: 5em;
+    position: relative }
+div.containerH1 h1 {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%) }
+    
+.tdTabela {
+	padding-top: 22px!important;
+}
+
+.inputColor {
+	background-color: #ffff70!important;
+}
+
+.select2-container .select2-selection--multiple {
+    background-color: #ffff70 !important;
+}
+
+.selecionada {
+    opacity: 0.5;
+}
